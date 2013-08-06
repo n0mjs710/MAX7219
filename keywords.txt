@@ -1,0 +1,41 @@
+#######################################
+# Syntax Coloring Map For MAX72
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+#######################################
+# Methods and Functions (KEYWORD1)
+#######################################
+
+dispClear	KEYWORD1
+dispAll   	KEYWORD1
+dispRefresh	KEYWORD1
+setIntensity	KEYWORD1
+setDigit	KEYWORD1
+setMatrix	KEYWORD1
+setColumns	KEYWORD1
+setRows   	KEYWORD1
+setPixel	KEYWORD1
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+MAX72   	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+DIG0	LITERAL1
+DIG1	LITERAL1
+DIG2	LITERAL1
+DIG3	LITERAL1
+DIG4	LITERAL1
+DIG5	LITERAL1
+DIG6	LITERAL1
+DIG7	LITERAL1
+
