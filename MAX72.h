@@ -15,15 +15,10 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 // REGISTER AND CONSTANT DEFINITIONS
 
-#define CS (10)
-#define DIG0 (0x1)
-#define DIG1 (0x2)
-#define DIG2 (0x3)
-#define DIG3 (0x4)
-#define DIG4 (0x5)
-#define DIG5 (0x6)
-#define DIG6 (0x7)
-#define DIG7 (0x8)
+// When referencing the digitregister in the chip, it's 1-8 instead of 0-7.
+//                              Everything else is 0-7, go figure...
+#define DIGITREGISTER(x) ((x) + 1)
+
 #define DECODEMODE (0x9)
 #define INTENSITY (0xA)
 #define SCANLIMIT (0xB)
@@ -47,7 +42,7 @@ class MAX72 {
 
   private:
     uint8_t _chipSelect;			// digital pin for chip select, must be discrete per instantiation
-    uint8_t _scanLimit;
+    uint8_t _numDigits;
     uint8_t _displayCache[8];			// RAM matrix for display caching
     void writeRegister(uint8_t, uint8_t);
  };

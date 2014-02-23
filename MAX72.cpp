@@ -28,9 +28,9 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 // Constructor to instantiate an instance of MAX72 to a specific chipSelect digital pin and with the number of digits specified to scan
 
-MAX72::MAX72(uint8_t chipSelect, uint8_t scanLimit) {
+MAX72::MAX72(uint8_t chipSelect, uint8_t numdigits) {
   _chipSelect = chipSelect;
-  _scanLimit = scanLimit;
+  _numDigits = numdigits;     // Register values 0-7 for 1-8 digits
 
   pinMode(_chipSelect, OUTPUT);
   digitalWrite(_chipSelect, HIGH);
@@ -40,37 +40,37 @@ MAX72::MAX72(uint8_t chipSelect, uint8_t scanLimit) {
   SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
   SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
 
-  writeRegister(SHUTDOWN, 0x0);		// Shut down the display while initializing things...
-  dispClear();				// Blank the display
-  writeRegister(SCANLIMIT, (_scanLimit-1));	// Set the scan limit (number of digits, 1-8) for the chip to scan
-  writeRegister(DECODEMODE, 0x0);	// Set no BCD segment decoding
-  writeRegister(INTENSITY, 0xf);	// Start at maximum brightness
-  writeRegister(SHUTDOWN, 0x1);		// Turn the display back on
+  writeRegister(SHUTDOWN, 0x0);         // Shut down the display while initializing things...
+  dispClear();				                  // Blank the display
+  writeRegister(SCANLIMIT, _numDigits - 1);	// Set the scan limit (Register values 0-7 for 1-8 digits) for the chip to scan
+  writeRegister(DECODEMODE, 0x0);	      // Set no BCD segment decoding
+  writeRegister(INTENSITY, 0xf);	      // Start at maximum brightness
+  writeRegister(SHUTDOWN, 0x1);		      // Turn the display back on
 }
 
 // Clears the entire display… or at least as much as was defined to scan when instantiating the object.
 
 void MAX72::dispClear() {
-  for (uint8_t i = 1; i <= _scanLimit; i++) {
+  for (uint8_t i = 0; i < _numDigits; i++) {
     _displayCache[i] = 0x0;
-    writeRegister(i, _displayCache[i]);
+    writeRegister(DIGITREGISTER(i), _displayCache[i]);
   }
 }
 
 // Turns on every LED on the display… or at least as much as was defined to scan when instantiating the object.
 
 void MAX72::dispAll() {
-  for (uint8_t i = 1; i <= _scanLimit; i++) {
+  for (uint8_t i = 0; i < _numDigits; i++) {
     _displayCache[i] = 0xff;
-    writeRegister(i, _displayCache[i]);
+    writeRegister(DIGITREGISTER(i), _displayCache[i]);
   }
 }
 
 // Causes the RAM buffer to be re-written to the chip. Handy if something goes wrong, or you just become unsure of the state.
 
 void MAX72::dispRefresh() {
-  for (uint8_t i = 1; i <= _scanLimit; i++) {
-    writeRegister(i, _displayCache[i]);
+  for (uint8_t i = 0; i < _numDigits; i++) {
+    writeRegister(DIGITREGISTER(i), _displayCache[i]);
   }
 }
 
@@ -85,69 +85,66 @@ void MAX72::setIntensity(uint8_t intensity) {
 // Sets the digit (columns) specified with the segment values specified.
 
 void MAX72::setDigit(uint8_t digit, uint8_t segments) {
-  if (0 < digit <= _scanLimit) {
+  if (0 <= digit < _numDigits) {
     _displayCache[digit] = segments;
-    writeRegister(digit, _displayCache[digit]);
+    writeRegister(DIGITREGISTER(digit), _displayCache[digit]);
   }
 }
 
 // Sets the "matrix" combination of digits (columns) and segments (rows) supplied.
 
 void MAX72::setMatrix(uint8_t digits, uint8_t segments) {
-  uint8_t colcounter = 1;
-  for (uint8_t i = 1; i <= _scanLimit; i++) {
-    if (colcounter & digits) {
+  //uint8_t colmask = 0b00000001;
+  for (uint8_t i = 0, colmask = 0b00000001; i < _numDigits; i++, colmask <<= 1) {
+    if (colmask & digits) {
       _displayCache[i] = segments;
-      writeRegister(i, _displayCache[i]);
+      writeRegister(DIGITREGISTER(i), _displayCache[i]);
     } else {
       _displayCache[i] = 0x0;
-      writeRegister(i, _displayCache[i]);
+      writeRegister(DIGITREGISTER(i), _displayCache[i]);
     }
-    colcounter = colcounter << 1;
+    //colmask <<= 1;
   }
 }
 
 // Special method - assumes all digits are enabled, and sets the segments (rows) specified on every digit (column)
 
 void MAX72::setRows(uint8_t segments) {
-  for (uint8_t i = 1; i <= _scanLimit; i++) {
+  for (uint8_t i = 0; i < _numDigits; i++) {
     _displayCache[i] = segments;
-    writeRegister(i, _displayCache[i]);
+    writeRegister(DIGITREGISTER(i), _displayCache[i]);
   }
 }
 
 // Special method - assumes all segments (rows) are enabled and sets the digits (columns) specified on every segment (row)
 
 void MAX72::setColumns(uint8_t digits) {
-  uint8_t colcounter = 1;
-  for (uint8_t i = 1; i <= _scanLimit; i++) {
-    if (colcounter & digits) {
+  uint8_t colmask = 1;
+  for (uint8_t i = 0; i < _numDigits; i++) {
+    if (colmask & digits) {
       _displayCache[i] = 0xff;
-      writeRegister(i, _displayCache[i]);
+      writeRegister(DIGITREGISTER(i), _displayCache[i]);
     } else {
       _displayCache[i] = 0x0;
-      writeRegister(i, _displayCache[i]);
+      writeRegister(DIGITREGISTER(i), _displayCache[i]);
     }
-    colcounter = colcounter << 1;
+    colmask = colmask << 1;
   }
 }
 
 // Sets an individual pixel located at digit (column), segment (row), to state "state"  (ON/OFF, HIGH/LOW, 1/0).
 
 void MAX72::setPixel(uint8_t digit, uint8_t segment, boolean state) {
-  if (0 < segment <= _scanLimit) {
-    for (uint8_t i = 1; i <= DIG7; i++ ) {
-      if (i == digit) {
-        if (state) {
-          _displayCache[digit] |= (HIGH << (segment - 1));
-          writeRegister(digit, _displayCache[digit]);
-        } else {
-          _displayCache[digit] &= ~ (HIGH << (segment - 1));
-          writeRegister(digit, _displayCache[digit]);
-        }
-        return;
-      }
-    }
+  if (! (0 <= digit < _numDigits)) {
+    return;
+  }
+  
+  if (state) {
+    _displayCache[digit] |= (HIGH << segment);
+    writeRegister(DIGITREGISTER(digit), _displayCache[digit]);
+  } else {
+    _displayCache[digit] &= ~ (HIGH << segment);
+    writeRegister(DIGITREGISTER(digit), _displayCache[digit]);
   }
 }
 
