@@ -26,6 +26,7 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 #define    CLOCK_DIVIDER (2)           // SPI bus speed to be 1/2 of the processor clock speed - 8MHz on most Arduinos
 
+
 // Constructor to instantiate an instance of MAX72 to a specific chipSelect digital pin and with the number of digits specified to scan
 
 MAX72::MAX72(uint8_t chipSelect, uint8_t numdigits) {

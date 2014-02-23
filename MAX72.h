@@ -9,7 +9,8 @@ This class implements several methods for using the MAX72xx family of LED contro
 NOTE: Reducing the Scan Limit value below maximum will mess up the intensity control. The number of items the chip scans is linked to how PWM dimming is implemented. Unless you're really strapped for resources, or don't care about dimming, you'll get the best results by leaving it at 8 (maximum).
 
 */
- 
+
+
 #ifndef MAX72_h
 #define MAX72_h
 
