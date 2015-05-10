@@ -30,22 +30,30 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 class MAX72 {
   public:
-    MAX72(uint8_t, uint8_t);			// Constructor to instantiate a discrete IC as an object and set up the chip
-    void dispClear();				// Clears the entire display
-    void dispAll();				// Sets all LEDs to on
-    void dispRefresh();				// Writes the RAM buffer to the chip… just in case you need to do this
-    void setIntensity(uint8_t);			// Sets the on-chip PWM intensity, valid values are 0-15
-    void setDigit(uint8_t, uint8_t);		// Sets a the specified digit with the specified segment values
-    void setMatrix(uint8_t, uint8_t);		// Sets the entire display with matrix values digits, segments (columns, rows)
-    void setColumns(uint8_t);			// Sets the digits (columns) as specified, turns all segments (rows) on
-    void setRows(uint8_t);			// Sets the segments (rows) as specified, turns all digits (columns) on
+    MAX72(uint8_t, uint8_t);			        // Constructor to instantiate a discrete IC as an object and set up the chip
+    void initChip();                      // Normally only used by the constructor, but will re-set the chip if needed
+    void dispClear();			      	        // Clears the entire display
+    void dispAll();				                // Sets all LEDs to on
+    void dispRefresh();			    	        // Writes the RAM buffer to the chip… just in case you need to do this
+    void setIntensity(uint8_t);			      // Sets the on-chip PWM intensity, valid values are 0-15
+    void setDigit(uint8_t, uint8_t);		  // Sets a the specified digit with the specified segment values
+    void setMatrix(uint8_t, uint8_t);	    // Sets the entire display with matrix values digits, segments (columns, rows)
+    void setColumns(uint8_t);			        // Sets the digits (columns) as specified, turns all segments (rows) on
+    void setRows(uint8_t);			          // Sets the segments (rows) as specified, turns all digits (columns) on
     void setPixel(uint8_t, uint8_t, boolean);	// Sets or clears the pixel at the specified digit (column) and segment (row)
 
   private:
+<<<<<<< HEAD
+    uint8_t _chipSelect;			            // digital pin for chip select, must be discrete per instantiation
+    uint8_t _numDigits;                   // number of digits we will use
+    uint8_t _displayCache[8];			        // RAM matrix for display caching
+    void writeRegister(uint8_t, uint8_t); // We write arbitary registers, but don't expose it to the end-user
+=======
     uint8_t _chipSelect;			// digital pin for chip select, must be discrete per instantiation
     uint8_t _numDigits;
     uint8_t _displayCache[8];			// RAM matrix for display caching
     void writeRegister(uint8_t, uint8_t);
+>>>>>>> origin/master
  };
 		
 #endif //MAX72
