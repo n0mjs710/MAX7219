@@ -43,17 +43,11 @@ class MAX72 {
     void setPixel(uint8_t, uint8_t, boolean);	// Sets or clears the pixel at the specified digit (column) and segment (row)
 
   private:
-<<<<<<< HEAD
     uint8_t _chipSelect;			            // digital pin for chip select, must be discrete per instantiation
     uint8_t _numDigits;                   // number of digits we will use
     uint8_t _displayCache[8];			        // RAM matrix for display caching
     void writeRegister(uint8_t, uint8_t); // We write arbitary registers, but don't expose it to the end-user
-=======
-    uint8_t _chipSelect;			// digital pin for chip select, must be discrete per instantiation
-    uint8_t _numDigits;
-    uint8_t _displayCache[8];			// RAM matrix for display caching
-    void writeRegister(uint8_t, uint8_t);
->>>>>>> origin/master
+
  };
 		
 #endif //MAX72

@@ -32,17 +32,12 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 MAX72::MAX72(uint8_t chipSelect, uint8_t numdigits) {
   _chipSelect = chipSelect;
-<<<<<<< HEAD
   _numDigits = numdigits;               // Register values 0-7 for 1-8 digits
-=======
-  _numDigits = numdigits;     // Register values 0-7 for 1-8 digits
->>>>>>> origin/master
 
   pinMode(_chipSelect, OUTPUT);
   digitalWrite(_chipSelect, HIGH);
 
   SPI.begin();                          // Start up the SPI bus… crank'er up Charlie!
-<<<<<<< HEAD
   //SPI.setClockDivider(CLOCK_DIVIDER);   // Sets the SPI bus speed
   //SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
   //SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
@@ -58,17 +53,6 @@ void MAX72::initChip() {
   writeRegister(DECODEMODE, 0x0);	      // Set no BCD segment decoding
   writeRegister(INTENSITY, 0xf);	      // Start at maximum brightness
   dispClear();				                  // Blank the display
-=======
-  SPI.setClockDivider(CLOCK_DIVIDER);   // Sets the SPI bus speed
-  SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
-  SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
-
-  writeRegister(SHUTDOWN, 0x0);         // Shut down the display while initializing things...
-  dispClear();				                  // Blank the display
-  writeRegister(SCANLIMIT, _numDigits - 1);	// Set the scan limit (Register values 0-7 for 1-8 digits) for the chip to scan
-  writeRegister(DECODEMODE, 0x0);	      // Set no BCD segment decoding
-  writeRegister(INTENSITY, 0xf);	      // Start at maximum brightness
->>>>>>> origin/master
   writeRegister(SHUTDOWN, 0x1);		      // Turn the display back on
 }
 
