@@ -28,20 +28,15 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 
 
-
 // Constructor to instantiate an instance of MAX72 to a specific chipSelect digital pin and with the number of digits specified to scan
 
 MAX72::MAX72(uint8_t chipSelect, uint8_t numdigits) {
   _chipSelect = chipSelect;
-<<<<<<< Updated upstream
-  _numDigits = numdigits;     // Register values 0-7 for 1-8 digits
-=======
 <<<<<<< HEAD
   _numDigits = numdigits;               // Register values 0-7 for 1-8 digits
 =======
   _numDigits = numdigits;     // Register values 0-7 for 1-8 digits
 >>>>>>> origin/master
->>>>>>> Stashed changes
 
   pinMode(_chipSelect, OUTPUT);
   digitalWrite(_chipSelect, HIGH);
@@ -73,10 +68,7 @@ void MAX72::initChip() {
   writeRegister(SCANLIMIT, _numDigits - 1);	// Set the scan limit (Register values 0-7 for 1-8 digits) for the chip to scan
   writeRegister(DECODEMODE, 0x0);	      // Set no BCD segment decoding
   writeRegister(INTENSITY, 0xf);	      // Start at maximum brightness
-<<<<<<< Updated upstream
-=======
 >>>>>>> origin/master
->>>>>>> Stashed changes
   writeRegister(SHUTDOWN, 0x1);		      // Turn the display back on
 }
 
