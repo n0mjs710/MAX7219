@@ -3,6 +3,7 @@
   Maxim MAX7219/MAX7221 Class for Arduino
   Created by Cort Buffington
   July 2012
+  Updated 12/21/2015
 
 This class implements several methods for using the MAX72xx family of LED controllers. All methods for display writing (turning LEDs on and off) store the display state in an 8x8 RAM matrix. Some of the methods will update (and display) the entire 8x8 matrix, while some will only "update" parts of it. Hardware SPI is used. The focus of this class is on speed and efficiency. It is limited in that it ONLY addresses the chip(s) in matrix mode, i.e. does not use the onboard 7 segment decoding features.
 
@@ -15,16 +16,35 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 
 // Defines to keep logical information symbolic go here
 
+#ifndef    HIGH
 #define    HIGH          (1)
+#endif
+
+#ifndef    LOW
 #define    LOW           (0)
+#endif
+
+#ifndef    ON
 #define    ON            (1)
+#endif
+
+#ifndef    OFF
 #define    OFF           (0)
+#endif
+
+#ifndef    OUTPUT
 #define    OUTPUT        (1)
+#endif
+
+#ifndef    INPUT
 #define    INPUT         (0)
+#endif
 
 // Here we have things for the SPI bus configuration
+//   Commented out by default because it should only be used in extreme cases
+//   If you have to ask about this, you should not use it!
 
-#define    CLOCK_DIVIDER (2)            // SPI bus speed to be 1/2 of the processor clock speed - 8MHz on most Arduinos
+//#define    CLOCK_DIVIDER (2)            // SPI bus speed to be 1/2 of the processor clock speed - 8MHz on most Arduinos
 
 
 
@@ -37,7 +57,8 @@ MAX72::MAX72(uint8_t chipSelect, uint8_t numdigits) {
   pinMode(_chipSelect, OUTPUT);
   digitalWrite(_chipSelect, HIGH);
 
-  SPI.begin();                          // Start up the SPI bus… crank'er up Charlie!
+  SPI.begin();                          // Start up the SPI bus
+  // The following should only be uncommended if you really know you need to do this!!!
   //SPI.setClockDivider(CLOCK_DIVIDER);   // Sets the SPI bus speed
   //SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
   //SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
@@ -57,7 +78,7 @@ void MAX72::initChip() {
 }
 
 
-// Clears the entire display… or at least as much as was defined to scan when instantiating the object.
+// Clears the entire display√â or at least as much as was defined to scan when instantiating the object.
 
 void MAX72::dispClear() {
   for (uint8_t i = 0; i < _numDigits; i++) {
@@ -66,7 +87,7 @@ void MAX72::dispClear() {
   }
 }
 
-// Turns on every LED on the display… or at least as much as was defined to scan when instantiating the object.
+// Turns on every LED on the display√â or at least as much as was defined to scan when instantiating the object.
 
 void MAX72::dispAll() {
   for (uint8_t i = 0; i < _numDigits; i++) {
@@ -160,10 +181,11 @@ void MAX72::setPixel(uint8_t digit, uint8_t segment, boolean state) {
 // Internal method for actually writing to the MAX7219/21 chip. Not for public use.
 
 void MAX72::writeRegister(uint8_t chipRegister, uint8_t chipValue) {
-//  PORTD &= ~ (1 << _chipSelect);
-  digitalWrite(_chipSelect, LOW);
+// Comment/Uncomment lines in special cases to avoid digitalWrite's limitaitons in speed.  
+//  PORTD &= ~ (1 << _chipSelect); //  Bypass digitalWrite's inherent slowness
+  digitalWrite(_chipSelect, LOW);  //  Use digitalWrite's inherent easiness
   SPI.transfer(chipRegister);
   SPI.transfer(chipValue);
-//  PORTD |= (1 << _chipSelect);
-  digitalWrite(_chipSelect, HIGH);
+//  PORTD |= (1 << _chipSelect);   //  Bypass digitalWrite's inherent slowness
+  digitalWrite(_chipSelect, HIGH); //  Use digitalWrite's inherent easiness
 }
