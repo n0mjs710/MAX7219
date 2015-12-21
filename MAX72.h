@@ -20,10 +20,10 @@ NOTE: Reducing the Scan Limit value below maximum will mess up the intensity con
 //                              Everything else is 0-7, go figure...
 #define DIGITREGISTER(x) ((x) + 1)
 
-#define DECODEMODE (0x9)
-#define INTENSITY (0xA)
-#define SCANLIMIT (0xB)
-#define SHUTDOWN (0xC)
+#define DECODEMODE  (0x9)
+#define INTENSITY   (0xA)
+#define SCANLIMIT   (0xB)
+#define SHUTDOWN    (0xC)
 #define DISPLAYTEST (0xF)
 
 #include <Arduino.h>
